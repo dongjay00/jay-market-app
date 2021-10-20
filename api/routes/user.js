@@ -1,4 +1,8 @@
-const { verifyToken, verifyTokenAndAuthorization } = require("./verifyToken");
+const {
+  verifyToken,
+  verifyTokenAndAuthorization,
+  verifyTokenAndAdmin,
+} = require("./verifyToken");
 const CryptoJS = require("crypto-js");
 const User = require("../models/User");
 
@@ -32,6 +36,17 @@ router.delete("/:id", verifyTokenAndAuthorization, async (req, res) => {
   try {
     await User.findByIdAndDelete(req.params.id);
     res.status(200).json("User has been deleted...");
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+// 회원정보 불러오기 (Admin 계정 전용)
+router.get("/find/:id", verifyTokenAndAdmin, async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    const { password, ...others } = user._doc;
+    res.status(200).json(others);
   } catch (err) {
     res.status(500).json(err);
   }
