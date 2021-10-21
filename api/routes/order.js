@@ -35,4 +35,14 @@ router.put("/:id", verifyTokenAndAdmin, async (req, res) => {
   }
 });
 
+// 주문내역 삭제
+router.delete("/:id", verifyTokenAndAdmin, async (req, res) => {
+  try {
+    await Order.findByIdAndDelete(req.params.id);
+    res.status(200).json("Order has been deleted...");
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
 module.exports = router;
