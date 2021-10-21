@@ -1,5 +1,9 @@
 const Cart = require("../models/Cart");
-const { verifyToken, verifyTokenAndAuthorization } = require("./verifyToken");
+const {
+  verifyToken,
+  verifyTokenAndAuthorization,
+  verifyTokenAndAdmin,
+} = require("./verifyToken");
 
 const router = require("express").Router();
 
@@ -46,6 +50,16 @@ router.get("/find/:userId", verifyTokenAndAuthorization, async (req, res) => {
   try {
     const cart = await Cart.findOne({ userId: req.params.userId });
     res.status(200).json(cart);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+// 모든 카트 가져오기
+router.get("/", verifyTokenAndAdmin, async (req, res) => {
+  try {
+    const carts = await Cart.find();
+    res.status(200).json(carts);
   } catch (err) {
     res.status(500).json(err);
   }
